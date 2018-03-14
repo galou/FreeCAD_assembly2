@@ -194,9 +194,6 @@ def path_rel_to_abs(path):
     j = FreeCAD.ActiveDocument.FileName.rfind('/')
     k = path.find('/')
     absPath = FreeCAD.ActiveDocument.FileName[:j] + path[k:]
-    FreeCAD.Console.PrintMessage("First %s\n" % FreeCAD.ActiveDocument.FileName[:j])
-    FreeCAD.Console.PrintMessage("Next %s\n" % path[k:])
-    FreeCAD.Console.PrintMessage("absolutePath is %s\n" % absPath)
     if path.startswith('.') and os.path.exists( absPath ):
         return absPath
     else:
@@ -425,11 +422,11 @@ class EditPartCommand:
         docs = FreeCAD.listDocuments().values()
         docFilenames = [ d.FileName for d in docs ]
         if not obj.sourceFile in docFilenames :
-            FreeCAD.open(obj.sourceFile)
-            debugPrint(2, 'Openning %s' % str(obj.sourceFile))
+            FreeCAD.open(path_rel_to_abs(obj.sourceFile))
+            debugPrint(2, 'Openning %s' % obj.sourceFile)
         else:
-            name = docs[docFilenames.index(obj.sourceFile)].Name
-            debugPrint(2, 'Trying to set focus on %s, not working for some reason!' % str(obj.sourceFile))
+            name = docs[docFilenames.index(path_rel_to_abs(obj.sourceFile))].Name
+            debugPrint(2, 'Trying to set focus on %s, not working for some reason!' % obj.sourceFile)
             FreeCAD.setActiveDocument( name )
             FreeCAD.ActiveDocument=FreeCAD.getDocument( name )
             FreeCADGui.ActiveDocument=FreeCADGui.getDocument( name )
